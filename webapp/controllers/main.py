@@ -8,7 +8,6 @@ from flask import (Blueprint,
                     current_app
 )
 from flask_login import login_user, logout_user
-from flask_principal import Identity, AnonymousIdentity, identity_changed
 
 from webapp.extensions import oid, facebook, twitter
 from webapp.forms import LoginForm, RegisterForm, OpenIDForm
@@ -22,7 +21,7 @@ main_blueprint = Blueprint(
 
 @main_blueprint.route('/')
 def index():
-    return redirect(url_for('blog.home'))
+    return redirect(url_for('catalog.home'))
 
 @main_blueprint.route('/facebook')
 def facebook_login():
@@ -54,12 +53,13 @@ def facebook_authorized(resp):
         user = User(me.data['name'])
         db.session.add(user)
         db.session.commit()
+        login_user(user)
 
     #Login User here
     flash("You have been logged in.", category="success")
 
     return redirect(
-        request.args.get('next') or url_for('blog.name')
+        request.args.get('next') or url_for('catalog.home')
     )
 
 @main_blueprint.route('/login', methods=['GET', 'POST'])
@@ -79,13 +79,8 @@ def login():
         user = User.query.filter_by(username=form.username.data).one()
         login_user(user, remember=form.remember.data)
 
-        identity_changed.send(
-            current_app._get_current_object(),
-            identity = Identity(user.id)
-        )
-
         flash("You have been logged in.", category="success")
-        return redirect(url_for('blog.home'))
+        return redirect(url_for('catalog.home'))
 
     openid_errors = oid.fetch_error()
     if openid_errors:
@@ -97,13 +92,8 @@ def login():
 def logout():
     logout_user()
 
-    identity_changed.send(
-        current_app._get_current_object(),
-        identity=AnonymousIdentity()
-    )
-
     flash("You have been logged out.", category="success")
-    return redirect(url_for('blog.home'))
+    return redirect(url_for('catalog.home'))
 
 @main_blueprint.route('/register', methods=['GET', 'POST'])
 @oid.loginhandler
@@ -167,11 +157,12 @@ def twitter_authorized(resp):
         user = User(resp['screen_name'])
         db.session.add(user)
         db.session.commit()
+        login_user(user)
 
     # Login User here
     flash("You have been logged in.", category="success")
 
     return redirect(
-        request.args.get('next') or url_for('blog.name')
+        request.args.get('next') or url_for('catalog.home')
     )
 

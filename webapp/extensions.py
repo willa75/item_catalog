@@ -39,7 +39,7 @@ def create_or_login(resp):
 		db.session.commit()
 
 	#redirect to home page
-	return redirect(url_for('blog.home'))
+	return redirect(url_for('catalog.home'))
 
 facebook = oauth.remote_app(
 	'facebook',

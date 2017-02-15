@@ -3,17 +3,20 @@
 
 {% block body %}
 <div class="row">
+	<div class="col-lg-12">
+		<h1>{{ user.username }}</h1>
+	</div>
 	<div class="col-lg-9">
-		{% for post in posts.items %}
+		{% for item in items %}
 		<div class="row">
 			<div class="col-lg-12">
-				<h1>{{ post.title }}</h1>
+				<h3>{{ item.title }}</h3>
 			</div>
 		</div>
 		<div class="row">
 			<div class="col-lg-12">
-				{{ post.text | truncate(255) | safe }}
-				<a href="{{ url_for('.post', post_id = post.id ) }}">Read More</a>
+				{{ item.text | safe }}
+				<a href="{{ url_for('.item', item_id = item.id ) }}">Read More</a>
 			</div>
 		</div>
 		{% endfor %}

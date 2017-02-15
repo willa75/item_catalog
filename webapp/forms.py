@@ -75,16 +75,9 @@ class RegisterForm(FlaskForm):
 
 		return True
 
-class PostForm(FlaskForm):
-	title = StringField('Title', [
+class ItemForm(FlaskForm):
+	title = StringField('Name', [
 		DataRequired(),
 		Length(max=255)
 	])
-	text = TextAreaField('Content', [DataRequired()])
-
-class CommentForm(FlaskForm):
-    name = StringField(
-        'Name',
-        validators=[DataRequired(), Length(max=255)]
-    )
-    text = TextAreaField(u'Comment', validators=[DataRequired()])
+	description = TextAreaField('Content', [DataRequired()])

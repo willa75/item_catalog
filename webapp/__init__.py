@@ -1,14 +1,13 @@
 from config import DevConfig
 from flask import Flask
 from flask_login import current_user
-from flask_principal import identity_loaded, UserNeed, RoleNeed
 
 from models import db
-from controllers.blog import blog_blueprint
+from controllers.catalog import catalog_blueprint
 from controllers.main import main_blueprint
 from .extensions import bcrypt, oid,login_manager, principals, rest_api, celery
 from .controllers.rest.auth import AuthApi
-from .controllers.rest.post import PostApi
+from .controllers.rest.item import ItemApi
 def create_app(object_name):
     app = Flask(__name__)
     app.config.from_object(DevConfig)
@@ -19,9 +18,9 @@ def create_app(object_name):
     login_manager.init_app(app)
     principals.init_app(app)
     rest_api.add_resource(
-    	PostApi, 
-    	'/api/post',
-    	'/api/post/<int:post_id>',
+    	ItemApi, 
+    	'/api/item',
+    	'/api/item/<int:item_id>',
     	endpoint='api'
     )
     rest_api.add_resource(
@@ -30,21 +29,7 @@ def create_app(object_name):
     )
     rest_api.init_app(app)
 
-    @identity_loaded.connect_via(app)
-    def on_identity_loaded(sender, identity):
-    	#set the identity user object 
-    	identity.user = current_user
-
-    	#Add UserNeed to identity
-    	if hasattr(current_user, 'id'):
-    		identity.provides.add(UserNeed(current_user.id))
-
-    	#Add each role to the identity
-    	if hasattr(current_user, 'roles'):
-    		for role in current_user.roles:
-    			identity.provides.add(RoleNeed(role.name))
-
     app.register_blueprint(main_blueprint)
-    app.register_blueprint(blog_blueprint)
+    app.register_blueprint(catalog_blueprint)
     
     return app
