@@ -7,6 +7,7 @@ You will develop an application that provides a list of items within a variety o
 1. Open Terminal/CMD and navigate to the directory of the project
 2. (optional but recommended) Run `virtualenv env`
 3. (optional but recommended) Run `source env/bin/activate`
-4. Run `python manage.py shell`
-5. Run `db.create_all()` to create the db schema and close the python shell
-6. Run `python manage.py server` to run the webserver and naviagte to the url in the browser.
+4. Run `export WEBAPP_ENV="dev"`
+5. Run `python manage.py shell`
+6. Run `db.create_all()` to create the db schema and close the python shell
+7. Run `python manage.py server` to run the webserver and naviagte to the url in the browser.
