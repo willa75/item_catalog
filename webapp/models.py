@@ -11,6 +11,12 @@ from .extensions import bcrypt
 
 db = SQLAlchemy()
 
+roles = db.Table(
+    'role_users',
+    db.Column('user_id', db.Integer, db.ForeignKey('user.id')),
+    db.Column('role_id', db.Integer, db.ForeignKey('role.id'))
+)
+
 class User(db.Model):
 
     id = db.Column(db.Integer(), primary_key=True)
@@ -21,9 +27,17 @@ class User(db.Model):
         backref='user',
         lazy='dynamic'
     )
+    roles = db.relationship(
+        'Role',
+        secondary=roles,
+        backref=db.backref('users', lazy='dynamic')
+    )
 
     def __init__(self, username):
     	self.username = username
+
+        default = Role.query.filter_by(name="poster").one()
+        self.roles.append(default)
 
     def __repr__(self):
         return '<User {}>'.format(self.username)
@@ -70,6 +84,17 @@ tags = db.Table('item_tags',
     db.Column('item_id', db.Integer, db.ForeignKey('item.id')),
     db.Column('tag_id', db.Integer, db.ForeignKey('tag.id'))
 )
+
+class Role(db.Model):
+    id = db.Column(db.Integer(), primary_key=True)
+    name = db.Column(db.String(80), unique=True)
+    description = db.Column(db.String(255))
+
+    def __init__(self, name):
+        self.name = name
+
+    def __repr__(self):
+        return '<Role {}>'.format(self.name)
 
 class Item(db.Model):
     id = db.Column(db.Integer(), primary_key=True)

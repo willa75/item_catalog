@@ -8,6 +8,11 @@ from flask import (Blueprint,
                     current_app
 )
 from flask_login import login_user, logout_user
+from flask_principal import (
+    Identity,
+    AnonymousIdentity,
+    identity_changed
+)
 
 from webapp.extensions import oid, facebook, twitter
 from webapp.forms import LoginForm, RegisterForm, OpenIDForm
@@ -79,6 +84,11 @@ def login():
         user = User.query.filter_by(username=form.username.data).one()
         login_user(user, remember=form.remember.data)
 
+        identity_changed.send(
+            current_app._get_current_object(),
+            identity=Identity(user.id)
+        )
+
         flash("You have been logged in.", category="success")
         return redirect(url_for('catalog.home'))
 
@@ -91,6 +101,11 @@ def login():
 @main_blueprint.route('/logout', methods=['GET', 'POST'])
 def logout():
     logout_user()
+
+    identity_changed.send(
+        current_app._get_current_object(),
+        identity=AnonymousIdentity()
+    )
 
     flash("You have been logged out.", category="success")
     return redirect(url_for('catalog.home'))

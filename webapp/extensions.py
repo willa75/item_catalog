@@ -12,6 +12,9 @@ celery = Celery()
 oid = OpenID()
 oauth = OAuth()
 
+admin_permission = Permission(RoleNeed('admin'))
+poster_permission = Permission(RoleNeed('poster'))
+
 login_manager = LoginManager()
 
 login_manager.login_view = "main.login"

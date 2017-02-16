@@ -3,7 +3,7 @@ from flask_migrate import Migrate, MigrateCommand
 import os
 
 from webapp import create_app
-from webapp.models import db, User, Item, Tag
+from webapp.models import db, User, Item, Tag, Role
 
 #default to dev config
 env = os.environ.get('WEBAPP_ENV', 'dev')
@@ -17,7 +17,7 @@ manager.add_command('db', MigrateCommand)
 
 @manager.shell
 def make_shell_context():
-	return dict(app=app, db=db, User=User, Item=Item, Tag=Tag)
+	return dict(app=app, db=db, User=User, Item=Item, Tag=Tag, Role=Role)
 
 
 if __name__ == "__main__":

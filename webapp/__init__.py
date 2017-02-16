@@ -1,6 +1,7 @@
 from config import DevConfig
 from flask import Flask
 from flask_login import current_user
+from flask_principal import identity_loaded, UserNeed, RoleNeed
 
 from models import db
 from controllers.catalog import catalog_blueprint
@@ -28,6 +29,20 @@ def create_app(object_name):
     	'/api/auth'
     )
     rest_api.init_app(app)
+
+    @identity_loaded.connect_via(app)
+    def on_identity_loaded(sender, identity):
+        # Set the identity user object
+        identity.user = current_user
+
+        # Add the UserNeed to the identity
+        if hasattr(current_user, 'id'):
+            identity.provides.add(UserNeed(current_user.id))
+
+        # Add each role to the identity
+        if hasattr(current_user, 'roles'):
+            for role in current_user.roles:
+                identity.provides.add(RoleNeed(role.name))
 
     app.register_blueprint(main_blueprint)
     app.register_blueprint(catalog_blueprint)

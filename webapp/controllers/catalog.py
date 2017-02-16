@@ -1,7 +1,7 @@
 import datetime
 from os import path
 from flask import Blueprint, redirect, render_template, url_for, session
-from flask_login import login_required
+from flask_login import login_required, current_user
 from sqlalchemy import func
 
 from webapp.extensions import poster_permission, admin_permission
@@ -93,13 +93,13 @@ def user(username):
 def new_item():
     form = ItemForm()
 
-    if not current_user:
-        return redirect(url_for('main.login'))
-
     if form.validate_on_submit():
         new_item = Item(form.title.data)
         new_item.description = form.description.data
         new_item.added_date = datetime.datetime.now()
+        new_item.user = User.query.filter_by(
+            username=current_user.username
+        ).one()
 
         db.session.add(new_item)
         db.session.commit()
