@@ -2,7 +2,8 @@
 
 Code for one of my full stack web developer nanodegree projects. *Recommeded to have [virtualenv](http://docs.python-guide.org/en/latest/dev/virtualenvs/)*
 
-You will develop an application that provides a list of items within a variety of categories as well as provide a user registration and authentication system. Registered users will have the ability to post, edit and delete their own items. To get started with the application follow the steps below:
+This was built for Udacity's fullstack nanodegree program:
+An application that provides a list of items within a variety of categories as well as provide a user registration and authentication system. Registered users will have the ability to post, edit and delete their own items. To get started with the application follow the steps below:
 
 1. Open Terminal/CMD and navigate to the directory of the project
 2. (optional but recommended) Run `virtualenv env`
