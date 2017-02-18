@@ -2,6 +2,7 @@ import datetime
 from os import path
 from flask import Blueprint, redirect, render_template, url_for, session
 from flask_login import login_required, current_user
+from flask_principal import Permission, UserNeed
 from sqlalchemy import func
 
 from webapp.extensions import poster_permission, admin_permission
@@ -55,8 +56,7 @@ def item(item_id):
         tags=tags,
         recent=recent,
         top_tags=top_tags,
-        user=user,
-        form=form
+        user=user
     )
 
 @catalog_blueprint.route('/tag/<string:tag_name>')
@@ -97,12 +97,27 @@ def new_item():
         new_item = Item(form.title.data)
         new_item.description = form.description.data
         new_item.added_date = datetime.datetime.now()
+        new_item.price = form.price.data
+
+        if form.tags.data:
+            for item in form.tags.data:
+                tag = Tag.query.filter_by(title=item).first()
+
+                #Add the tag if it exists
+                # If not, make a new tag
+                if tag:
+                    new_item.tags.append(tag)
+                else:
+                    new_tag = Tag(item)
+                    new_item.tags.append(new_tag)
+
         new_item.user = User.query.filter_by(
             username=current_user.username
         ).one()
 
         db.session.add(new_item)
         db.session.commit()
+        return redirect(url_for('.home'))
 
     return render_template('new.html', form=form)
 
@@ -122,13 +137,30 @@ def edit_item(id):
             item.description = form.description.data
             item.added_date = datetime.datetime.now()
 
+            if form.tags.data:
+                item.tags = []
+                for tag_val in form.tags.data:
+                    tag = Tag.query.filter_by(title=tag_val).first()
+
+                    #Add the tag if it exists
+                    # If not, make a new tag
+                    if tag:
+                        item.tags.append(tag)
+                    else:
+                        new_tag = Tag(tag_val)
+                        item.tags.append(new_tag)
+            
             db.session.add(item)
             db.session.commit()
 
             return redirect(url_for('.item', item_id=item.id))
 
-        form.description.data = item.description
+        # Make sure the tag values are displayed and not the class representations
+        tag_title_list = []
+        for tag in item.tags:
+            tag_title_list.append(str(tag.title))
 
-        return render_template('edit.html', form=form, item=item)
+        tag_title_list = ','.join(tag_title_list)
+        return render_template('edit.html', form=form, item=item, tags=tag_title_list)
 
     abort(403)    
