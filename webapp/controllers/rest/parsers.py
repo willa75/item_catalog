@@ -23,16 +23,21 @@ item_post_parser.add_argument(
 )
 
 item_post_parser.add_argument(
-	'text',
-	type=str,
-	required=True,
-	help="Body text is required"
+	'description',
+	type=str
 )
 
 item_post_parser.add_argument(
 	'tag',
 	type=str,
 	action='append'
+)
+
+item_post_parser.add_argument(
+	'price',
+	type=float,
+	required=True,
+	help='Price is required'
 )
 
 item_post_parser.add_argument(
@@ -56,7 +61,7 @@ item_put_parser.add_argument(
 )
 
 item_put_parser.add_argument(
-	'text',
+	'description',
 	type=str
 )
 
@@ -64,6 +69,11 @@ item_put_parser.add_argument(
 	'tag',
 	type=str,
 	action='append'
+)
+
+item_put_parser.add_argument(
+	'price',
+	type=float
 )
 
 user_post_parser = reqparse.RequestParser()

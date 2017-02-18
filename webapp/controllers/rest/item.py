@@ -14,7 +14,8 @@ nested_tag_fields = {
 item_fields = {
     'author': fields.String(attribute=lambda x: x.user.username),
     'title': fields.String(),
-    'text': HTMLField(),
+    'description': fields.String(),
+    'price': fields.Float(),
     'tags': fields.List(fields.Nested(nested_tag_fields)),
     'added_date': fields.DateTime(dt_format='iso8601')
 }
@@ -61,7 +62,8 @@ class ItemApi(Resource):
 
             new_item = Item(args['title'])
             new_item.date = datetime.datetime.now()
-            new_item.text = args['text']
+            new_item.description = args['description']
+            new_item.price = args['price']
             new_item.user = user
 
             if args['tag']:
@@ -98,8 +100,11 @@ class ItemApi(Resource):
             if args['title']:
                 item.title = args['title']
 
-            if args['text']:
-                item.text = args['text']
+            if args['description']:
+                item.description = args['description']
+
+            if args['price']:
+                item.price = args['price']
 
             if args['tag']:
                 for item in args['tag']:

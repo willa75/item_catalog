@@ -20,8 +20,8 @@ def create_app(object_name):
     principals.init_app(app)
     rest_api.add_resource(
     	ItemApi, 
-    	'/api/item',
-    	'/api/item/<int:item_id>',
+    	'/api/post',
+    	'/api/post/<int:item_id>',
     	endpoint='api'
     )
     rest_api.add_resource(
