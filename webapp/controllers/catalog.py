@@ -1,6 +1,6 @@
 import datetime
 from os import path
-from flask import Blueprint, redirect, render_template, url_for, session
+from flask import Blueprint, redirect, render_template, url_for, session, flash
 from flask_login import login_required, current_user
 from flask_principal import Permission, UserNeed
 from sqlalchemy import func
@@ -17,6 +17,7 @@ catalog_blueprint = Blueprint(
 )
 
 def sidebar_data():
+    'Gets recent created items and most used tags'
     recent = Item.query.order_by(
         Item.added_date.desc()
     ).limit(5).all()
@@ -31,6 +32,7 @@ def sidebar_data():
 @catalog_blueprint.route('/')
 @catalog_blueprint.route('/<int:page>')
 def home(page=1):
+    'Renders homepage of site'
     items = Item.query.order_by(
         Item.added_date.desc()
     ).paginate(page, 10)
@@ -45,6 +47,7 @@ def home(page=1):
 
 @catalog_blueprint.route('/item/<int:item_id>', methods=['GET'])
 def item(item_id):
+    'Renders item page by id given'
     item = Item.query.get_or_404(item_id)
     tags = item.tags
     user = User.query.filter_by(id = item.user_id).first_or_404()
@@ -61,6 +64,7 @@ def item(item_id):
 
 @catalog_blueprint.route('/tag/<string:tag_name>')
 def tag(tag_name):
+    'List all items created with the supplied tag name'
     tag = Tag.query.filter_by(title = tag_name).first_or_404()
     items = tag.items.order_by(Item.added_date.desc()).all()
     recent, top_tags = sidebar_data()
@@ -75,6 +79,7 @@ def tag(tag_name):
 
 @catalog_blueprint.route('/user/<string:username>')
 def user(username):
+    'Loads userpage by unique username'
     user = User.query.filter_by(username=username).first_or_404()
     items = user.items.order_by(Item.added_date.desc()).all()
     recent, top_tags = sidebar_data()
@@ -91,6 +96,7 @@ def user(username):
 @login_required
 @poster_permission.require(http_exception=403)
 def new_item():
+    'Allows logged in users to create new items'
     form = ItemForm()
 
     if form.validate_on_submit():
@@ -125,6 +131,7 @@ def new_item():
 @login_required
 @poster_permission.require(http_exception=403)
 def edit_item(id):
+    'Allows users to edit their own items or the items of others if they are an admin'
     item = Item.query.get_or_404(id)
     permission = Permission(UserNeed(item.user.id))
 
@@ -163,4 +170,22 @@ def edit_item(id):
         tag_title_list = ','.join(tag_title_list)
         return render_template('edit.html', form=form, item=item, tags=tag_title_list)
 
-    abort(403)    
+    abort(403) 
+
+@catalog_blueprint.route('/delete/<int:id>', methods=['GET', 'POST'])
+@login_required
+@poster_permission.require(http_exception=403)
+def delete_item(id):  
+    'Allows users to delete their own items or the items of others if they are an admin'
+    item = Item.query.get_or_404(id)
+    permission = Permission(UserNeed(item.user.id))
+
+    # We want admins to be able to edit any item
+    if permission.can() or admin_permission.can():
+        db.session.delete(item)
+        db.session.commit()
+
+        flash("The item was successfully deleted", category="success")
+        return redirect(url_for('.home'))
+
+    abort(403)

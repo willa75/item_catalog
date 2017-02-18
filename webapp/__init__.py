@@ -13,6 +13,7 @@ def create_app(object_name):
     app = Flask(__name__)
     app.config.from_object(DevConfig)
 
+    #initialize db and extensions
     db.init_app(app)
     bcrypt.init_app(app)
     oid.init_app(app)
@@ -44,6 +45,7 @@ def create_app(object_name):
             for role in current_user.roles:
                 identity.provides.add(RoleNeed(role.name))
 
+    #initialize app controllers
     app.register_blueprint(main_blueprint)
     app.register_blueprint(catalog_blueprint)
     

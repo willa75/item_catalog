@@ -23,6 +23,7 @@ def make_shell_context():
 
 @manager.command
 def setup_db():
+	'Code to setup initial db with necessary info'
 	db.create_all()
 
 	admin_role = Role("admin")
