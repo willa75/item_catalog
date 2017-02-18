@@ -2,7 +2,7 @@
 
 Code for one of my full stack web developer nanodegree projects. *Recommeded to have [virtualenv](http://docs.python-guide.org/en/latest/dev/virtualenvs/)*
 
-This was built for Udacity's fullstack nanodegree program:
+Code used boilerplate gotten from working through part of [mastering flask](https://www.amazon.com/Mastering-Flask-Jack-Stouffer-ebook/dp/B00YSILB26/ref=sr_1_1?s=digital-text&ie=UTF8&qid=1487435825&sr=1-1&keywords=Mastering+Flask+Mastering+Jack+Stouffer)
 An application that provides a list of items within a variety of categories as well as provide a user registration and authentication system. Registered users will have the ability to post, edit and delete their own items. To get started with the application follow the steps below:
 
 1. Open Terminal/CMD and navigate to the directory of the project
