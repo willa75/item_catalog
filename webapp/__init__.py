@@ -6,7 +6,7 @@ from flask_principal import identity_loaded, UserNeed, RoleNeed
 from models import db
 from controllers.catalog import catalog_blueprint
 from controllers.main import main_blueprint
-from .extensions import bcrypt, oid,login_manager, principals, rest_api, celery
+from .extensions import bcrypt, oid,login_manager, principals, rest_api
 from .controllers.rest.auth import AuthApi
 from .controllers.rest.item import ItemApi
 def create_app(object_name):

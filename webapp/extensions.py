@@ -1,6 +1,5 @@
 from flask import session
 from flask_bcrypt import Bcrypt
-from flask_celery import Celery
 from flask_login import LoginManager
 from flask_openid import OpenID
 from flask_oauth import OAuth
@@ -8,7 +7,6 @@ from flask_principal import Principal, Permission, RoleNeed
 from flask_restful import Api
 
 bcrypt = Bcrypt()
-celery = Celery()
 oid = OpenID()
 oauth = OAuth()
 
