@@ -9,8 +9,10 @@ An application that provides a list of items within a variety of categories as w
 2. (optional but recommended) Run `virtualenv env`
 3. (optional but recommended) Run `source env/bin/activate`
 4. Run `export WEBAPP_ENV="dev"`
-5. Run `python manage.py setup_db` to create the db schema and close the python shell
-6. Run `python manage.py server` to run the webserver and naviagte to the url in the browser.
-7. Open web browser to http://localhost:5000/login to login to the site with credentials: 
+5. Run `git clone https://github.com/willa75/item_catalog.git`
+6. Run `pip install -r requirements.txt` to install the necessary dependencies
+7. Run `python manage.py setup_db` to create the db schema and close the python shell
+8. Run `python manage.py server` to run the webserver and naviagte to the url in the browser.
+9. Open web browser to http://localhost:5000/login to login to the site with credentials: 
 	username: admin  
 	password: password
